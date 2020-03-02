@@ -12,7 +12,6 @@ export class OfferBookingsPage implements OnInit {
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(paramMap =>);
   }
 
 }
