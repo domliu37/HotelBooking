@@ -13,7 +13,7 @@ export class PlaceDetailPage implements OnInit {
   ngOnInit() {
   }
 
-  OnBookPlace(){
+  OnBookPlace() {
     this.navctrl.navigateBack('/places/tabs/discover');
 
   }
