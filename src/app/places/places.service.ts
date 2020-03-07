@@ -22,7 +22,7 @@ export class PlacesService {
     ),
     new Place(
       'p3',
-      'AHeritage Auckland',
+      'A Heritage Auckland',
       'Refined hotel with a restaurant & a chic bar, as well as a rooftop pool & a tennis court.',
       'assets/Heritage.jpg',
       223
