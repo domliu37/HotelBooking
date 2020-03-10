@@ -4,7 +4,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-button color = "primary" (click)="onLogin()">Login</ion-button>
 
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">E-Mail</ion-label>
+            <ion-input></ion-input>
+          </ion-item>
+        </ion-list>
+        <!--<ion-spinner color="primary" *ngIf="isLoading"></ion-spinner>-->
+        <ion-button color = "primary" (click)="onLogin()" >Login</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
