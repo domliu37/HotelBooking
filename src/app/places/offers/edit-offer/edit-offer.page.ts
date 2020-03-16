@@ -11,10 +11,11 @@ import { Place } from '../../place.model';
 })
 export class EditOfferPage implements OnInit {
   place: Place;
-  constructor(private route: ActivatedRoute,
-              private navCtrl: NavController,
-              private placeService: PlacesService
-              ) { }
+  constructor(
+    private route: ActivatedRoute,
+    private navCtrl: NavController,
+    private placeService: PlacesService
+    ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
