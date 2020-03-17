@@ -82,7 +82,7 @@
           type="submit"
           color="primary"
           expand="block"
-          [disabled]="!f.valid"
+          [disabled]="!f.valid || !datesValid()"
           >Book!</ion-button>
         </ion-col>
       </ion-row>
