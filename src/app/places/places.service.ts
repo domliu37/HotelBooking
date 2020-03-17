@@ -11,21 +11,27 @@ export class PlacesService {
       'Stamford Plaza Auckland',
       'High-end hotel with plush quarters, a fitness centre & an indoor pool, plus Thai & Japanese dining.',
       'assets/Stamford.jpg',
-      258
+      258,
+      new Date('2015-01-05'),
+      new Date('2020-03-07')
     ),
     new Place(
       'p2',
       'Hilton Auckland',
       'Contemporary waterfront hotel offering a seafood restaurant & an outdoor heated lap pool.',
       'assets/Hilton.jpg',
-      428
+      428,
+      new Date('2015-01-05'),
+      new Date('2020-03-07')
     ),
     new Place(
       'p3',
       'A Heritage Auckland',
       'Refined hotel with a restaurant & a chic bar, as well as a rooftop pool & a tennis court.',
       'assets/Heritage.jpg',
-      223
+      223,
+      new Date('2015-01-05'),
+      new Date('2020-03-07')
     )
   ];
 
