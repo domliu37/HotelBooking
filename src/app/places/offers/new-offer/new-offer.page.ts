@@ -16,7 +16,8 @@ export class NewOfferPage implements OnInit {
   constructor(
     private placeService: PlacesService,
     private router: Router,
-    private loadingCtrl: LoadingController) { }
+    private loadingCtrl: LoadingController
+  ) { }
 
   ngOnInit() {
     this.form = new FormGroup({

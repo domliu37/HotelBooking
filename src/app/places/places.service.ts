@@ -1,50 +1,63 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
+import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { Place } from './place.model';
 import { AuthService } from '../auth/auth.service';
-import { BehaviorSubject } from 'rxjs';
-import { take, map, tap, delay } from 'rxjs/operators';
+import { registerLocaleData } from '@angular/common';
+
+interface PlaceData {
+  availableFrom: string;
+  availableTo: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  title: string;
+  userId: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
-  private _places = new BehaviorSubject<Place[]>([new Place(
-    'p1',
-    'Stamford Plaza Auckland',
-    'High-end hotel with plush quarters, a fitness centre & an indoor pool, plus Thai & Japanese dining.',
-    'assets/Stamford.jpg',
-    258,
-    new Date('2015-01-05'),
-    new Date('2020-03-07'),
-    'a213'
-  ),
-  new Place(
-    'p2',
-    'Hilton Auckland',
-    'Contemporary waterfront hotel offering a seafood restaurant & an outdoor heated lap pool.',
-    'assets/Hilton.jpg',
-    428,
-    new Date('2015-01-05'),
-    new Date('2020-03-07'),
-    'a'
-  ),
-  new Place(
-    'p3',
-    'A Heritage Auckland',
-    'Refined hotel with a restaurant & a chic bar, as well as a rooftop pool & a tennis court.',
-    'assets/Heritage.jpg',
-    223,
-    new Date('2015-01-05'),
-    new Date('2020-03-07'),
-    'a'
-  )]);
+  private _places = new BehaviorSubject<Place[]>([]);
 
 
   get places() {
     return this._places.asObservable();
   }
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private http: HttpClient) { }
+
+  fetchPlaces() {
+    return this.http
+    .get<{ [key: string]: PlaceData }>('https://ionic-angular-fc429.firebaseio.com/offered-place.json')
+    .pipe(map(resData => {
+      const places = [];
+      for (const key in resData) {
+        if (resData.hasOwnProperty(key)) {
+          places.push(
+            new Place(
+              key,
+              resData[key].title,
+              resData[key].description,
+              resData[key].imageUrl,
+              resData[key].price,
+              new Date(resData[key].availableFrom),
+              new Date(resData[key].availableTo),
+              resData[key].userId
+            )
+          );
+        }
+      }
+      return places;
+      //return [];
+    }),
+    tap(places => {
+      this._places.next(places);
+    })
+    );
+  }
 
   getPlace(id: string) {
     return this.places.pipe(take(1), map(places => {
@@ -53,6 +66,7 @@ export class PlacesService {
   }
 
   addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {
+    let generatedId: string;
     const newPlace = new Place(
       Math.random().toString(),
       title,
@@ -63,10 +77,23 @@ export class PlacesService {
       dateTo,
       this.authService.userId
     );
-
-    return this.places.pipe(take(1), delay(1000), tap( places => {
-      this._places.next(places.concat(newPlace));
-    } ));
+    return this.http
+    .post<{name: string}>('https://ionic-angular-fc429.firebaseio.com/offered-place.json',
+    { ...newPlace, id: null })
+    .pipe(
+      switchMap(resData => {
+        generatedId = resData.name;
+        return this.places;
+      }),
+      take(1),
+      tap(places => {
+        newPlace.id = generatedId;
+        this._places.next(places.concat(newPlace));
+      })
+    );
+    // return this.places.pipe(take(1), delay(1000), tap( places => {
+    //   this._places.next(places.concat(newPlace));
+    // } ))
   }
 
   updatePlace(placeId: string, title: string, description: string) {
@@ -89,3 +116,34 @@ export class PlacesService {
   }
 
 }
+
+// [new Place(
+//   'p1',
+//   'Stamford Plaza Auckland',
+//   'High-end hotel with plush quarters, a fitness centre & an indoor pool, plus Thai & Japanese dining.',
+//   'assets/Stamford.jpg',
+//   258,
+//   new Date('2015-01-05'),
+//   new Date('2020-03-07'),
+//   'a213'
+// ),
+// new Place(
+//   'p2',
+//   'Hilton Auckland',
+//   'Contemporary waterfront hotel offering a seafood restaurant & an outdoor heated lap pool.',
+//   'assets/Hilton.jpg',
+//   428,
+//   new Date('2015-01-05'),
+//   new Date('2020-03-07'),
+//   'a'
+// ),
+// new Place(
+//   'p3',
+//   'A Heritage Auckland',
+//   'Refined hotel with a restaurant & a chic bar, as well as a rooftop pool & a tennis court.',
+//   'assets/Heritage.jpg',
+//   223,
+//   new Date('2015-01-05'),
+//   new Date('2020-03-07'),
+//   'a'
+// )]

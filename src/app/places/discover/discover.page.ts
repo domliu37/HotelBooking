@@ -5,7 +5,6 @@ import { PlacesService } from '../places.service';
 import { Place } from '../place.model';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
-import { userInfo } from 'os';
 
 @Component({
   selector: 'app-discover',
