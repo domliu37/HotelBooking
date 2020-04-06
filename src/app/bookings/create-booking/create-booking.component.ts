@@ -7,7 +7,7 @@ import { Place } from '../../places/place.model';
 @Component({
   selector: 'app-create-booking',
   templateUrl: './create-booking.component.html',
-  styleUrls: ['./create-booking.component.scss'],
+  styleUrls: ['./create-booking.component.scss']
 })
 export class CreateBookingComponent implements OnInit {
   @Input() selectedPlace: Place;
@@ -16,7 +16,7 @@ export class CreateBookingComponent implements OnInit {
   startDate: string;
   endDate: string;
 
-  constructor(private modalCtrl: ModalController) { }
+  constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {
     const availableFrom = new Date(this.selectedPlace.availableFrom);
@@ -44,7 +44,6 @@ export class CreateBookingComponent implements OnInit {
     this.modalCtrl.dismiss(null, 'cancel');
   }
 
-
   onBookPlace() {
     if (!this.form.valid || !this.datesValid) {
       return;
@@ -63,9 +62,10 @@ export class CreateBookingComponent implements OnInit {
       'confirm'
     );
   }
-  datesValid() {
-    const startDate = new Date(this.form.value['date-from']);
-    const endDate = new Date(this.form.value['date-to']);
+
+  datesValid(form: NgForm) {
+    const startDate = new Date(form.value['date-from']);
+    const endDate = new Date(form.value['date-to']);
     return endDate > startDate;
   }
 }
