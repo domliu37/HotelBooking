@@ -74,7 +74,13 @@ export class PlacesService {
     }));
   }
 
-  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {
+  addPlace(
+    title: string,
+    description: string,
+    price: number,
+    dateFrom: Date,
+    dateTo: Date
+  ) {
     let generatedId: string;
     const newPlace = new Place(
       Math.random().toString(),
