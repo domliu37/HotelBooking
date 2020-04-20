@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, OnDestroy, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { environment } from '../../../environments/environment';
 
@@ -7,29 +7,47 @@ import { environment } from '../../../environments/environment';
   templateUrl: './map-modal.component.html',
   styleUrls: ['./map-modal.component.scss'],
 })
-export class MapModalComponent implements OnInit, AfterViewInit {
+export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('map', {static: false}) mapElementRef: ElementRef;
+  @Input() center = { lat: -36.848461, lng: 174.763336 }; // Auckland, NZ
+  @Input() selectable = true;
+  @Input() closeButtonText = 'Cancel';
+  @Input() title = 'Pick Location';
+  clickListener: any;
+  googleMaps: any;
 
   constructor(private modalCtrl: ModalController, private renderer: Renderer2) { }
 
   ngOnInit() {}
-
-  ngAfterViewInit() {
+//ngAfterViewInit  if we use this method the map will show at the first time but wont show again unlsee user drag the map
+  ionViewDidEnter() {
     this.getGoogleMaps().then(googleMaps => {
+      this.googleMaps = googleMaps;
       const mapEl = this.mapElementRef.nativeElement;
       const map = new googleMaps.Map(mapEl, {
-        center: { lat: -36.848461, lng: 174.763336 }, // Auckland, NZ
+        center: this.center,
         zoom: 16
       });
 
-      googleMaps.event.addListenerOnce(map, 'idle', () => {
+      this.googleMaps.event.addListenerOnce(map, 'idle', () => {
         this.renderer.addClass(mapEl, 'visible');
       });
 
-      map.addListener('click', event => {
-        const selectedCoords = {lat: event.latLng.lat(), lng: event.latLng.lng()};
-        this.modalCtrl.dismiss(selectedCoords);
-      });
+      if (this.selectable) {
+
+        this.clickListener = map.addListener('click', event => {
+          const selectedCoords = {lat: event.latLng.lat(), lng: event.latLng.lng()};
+          this.modalCtrl.dismiss(selectedCoords);
+        });
+      } else {
+        const marker = new googleMaps.Marker({
+          position: this.center,
+          map, //map: map
+          title: 'Picked Location'
+        });
+        marker.setMap(map);
+      }
+
     }).catch(err => {
       console.log(err);
     });
@@ -37,6 +55,13 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
   onCancel() {
     this.modalCtrl.dismiss();
+  }
+
+  ngOnDestroy() {
+    if (this.clickListener) {
+
+      this.googleMaps.event.removeListener(this.clickListener);
+    }
   }
 
   private getGoogleMaps(): Promise<any> {
