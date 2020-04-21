@@ -18,7 +18,12 @@ export class MapModalComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private modalCtrl: ModalController, private renderer: Renderer2) { }
 
+
   ngOnInit() {}
+
+  ngAfterViewInit() {
+    
+  }
 //ngAfterViewInit  if we use this method the map will show at the first time but wont show again unlsee user drag the map
   ionViewDidEnter() {
     this.getGoogleMaps().then(googleMaps => {

@@ -4,7 +4,6 @@ import { PlacesService } from '../../places.service';
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { PlaceLocation } from '../../location.model';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-new-offer',
